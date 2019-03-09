@@ -1,0 +1,37 @@
+---
+- hosts: localhost
+  tasks:
+    - name: Install homebrew
+      shell: /usr/bin/ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"
+
+    - name: Install Virtualbox and Vagrant via brew cask
+      homebrew_cask: name={{ item }} state=present
+      with_items:
+        - virtualbox
+        - vagrant
+        - visual-studio-code
+        - google-chrome
+        - slack
+        - postico
+        - datagrip
+        - sublime-text
+        - iterm2
+        - docker-toolbox
+        - docker
+        - android-studio
+        - java
+
+    - name: "Install homebrew packages"
+      homebrew:
+        name: ['zsh', 'tmux', 'vim', 'yarn', 'kubernetes-cli', 'kubernetes-helm', 'rbenv', 'mas']
+        state: present
+        update_homebrew: yes
+
+    - name: "Add ZSH to allowed shells"
+      shell: sudo cat $(which zsh) >> /etc/shells
+
+    - name: Install Oh My ZSH
+      shell: sh -c "$(curl -fsSL https://raw.githubusercontent.com/robbyrussell/oh-my-zsh/master/tools/install.sh)"
+
+    - name: Set ZSH as the default shell
+      shell: chsh -s $(which zsh)
