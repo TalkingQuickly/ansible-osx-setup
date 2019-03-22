@@ -4,7 +4,7 @@
     - name: Install homebrew
       shell: /usr/bin/ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"
 
-    - name: Install Virtualbox and Vagrant via brew cask
+    - name: Install core packages via brew casks
       homebrew_cask: name={{ item }} state=present
       with_items:
         - virtualbox
@@ -16,22 +16,151 @@
         - datagrip
         - sublime-text
         - iterm2
-        - docker-toolbox
-        - docker
+        - docker-edge
         - android-studio
-        - java
+        - caskroom/versions/java8
+        - android-sdk
+        - ngrok
+        - zeplin
+        - graphql-playground
+        - dash
+        - sketch
+        - zoomus
+        - postman
+        - microsoft-office
+    
+    - name: 'add custom homebrew repos'
+      homebrew_tap:
+        name: heroku/brew
 
     - name: "Install homebrew packages"
       homebrew:
-        name: ['zsh', 'tmux', 'vim', 'yarn', 'kubernetes-cli', 'kubernetes-helm', 'rbenv', 'mas']
+        name: [
+          'zsh', 
+          'tmux',
+          'vim',
+          'yarn',
+          'kubernetes-cli',
+          'kubernetes-helm',
+          'rbenv',
+          'mas',
+          'postgresql',
+          'watchman',
+          'heroku',
+          'awscli',
+          'imagemagick@6',
+          'gnu-time',
+          'kubectx'
+        ]
         state: present
         update_homebrew: yes
 
-    - name: "Add ZSH to allowed shells"
-      shell: sudo cat $(which zsh) >> /etc/shells
+    - name: "Link ImageMagick6 as main version (for rmagick gem)"
+      homebrew:
+        name: imagemagick@6
+        state: linked
+
+    - name: Install apps from the Mac App Store using MAS (Assumes you're logged in etc)
+      shell: mas install {{ item }}
+      with_items:
+        - 409183694 # Keynote
+
+    - name: Install Addroid SDKs etc
+      shell: yes | sdkmanager "{{ item }}" --sdk_root=/Users/{{ lookup('env', 'USER') }}/Library/Android/sdk
+      with_items:
+        - "platforms;android-25" 
+        - "platforms;android-26" 
+        - "platforms;android-27" 
+        - "platforms;android-28" 
+        - "platforms;android-23" 
+        - "build-tools;25.0.2" 
+        - "build-tools;25.0.3" 
+        - "build-tools;26.0.2" 
+        - "build-tools;26.0.1" 
+        - "build-tools;27.0.3" 
+        - "build-tools;23.0.3" 
+        - "build-tools;23.0.1" 
+        - "system-images;android-26;google_apis;x86" 
+        - "system-images;android-23;google_apis;x86" 
+        - "extras;android;m2repository" 
+        - "extras;google;m2repository" 
+        - "extras;google;google_play_services" 
+        - "extras;m2repository;com;android;support;constraint;constraint-layout;1.0.2" 
+        - "extras;m2repository;com;android;support;constraint;constraint-layout;1.0.1" 
+        - "add-ons;addon-google_apis-google-23"
+        - "add-ons;addon-google_apis-google-22" 
+        - "add-ons;addon-google_apis-google-21"
+        - "build-tools;26.0.0" 
+        - "build-tools;26.0.3"
+        - "build-tools;28.0.3"
+
+    - name: Get the path to ZSH
+      become: false
+      local_action: command which zsh
+      register: zsh_path
+
+    - name: "Ensure homebrew zsh is in allowed shells"
+      lineinfile:
+        path: /etc/shells
+        line: "{{ zsh_path.stdout }}"
+      become: true
 
     - name: Install Oh My ZSH
       shell: sh -c "$(curl -fsSL https://raw.githubusercontent.com/robbyrussell/oh-my-zsh/master/tools/install.sh)"
 
     - name: Set ZSH as the default shell
-      shell: chsh -s $(which zsh)
+      shell: chsh -s $(which zsh) {{ lookup('env', 'USER') }}
+      become: true
+
+    - name: Install Node Version Manager
+      shell: >
+        curl -o- https://raw.githubusercontent.com/creationix/nvm/v0.34.0/install.sh | bash
+      args:
+        creates: "{{ ansible_env.HOME }}/.nvm/nvm.sh"
+
+    - name: Install a default node version
+      shell: |
+        . "/Users/{{ lookup('env', 'USER') }}/.nvm/nvm.sh"
+        nvm install node
+
+    - name: "Create a default ZSH configuration"
+      template:
+        src: templates/.zshrc.j2
+        dest: /Users/{{ lookup('env', 'USER') }}/.zshrc
+        owner: "{{ lookup('env', 'USER') }}"
+        force: yes
+
+    - name: Install yarn packages
+      shell: yarn global add {{ item }} --prefix /usr/local
+      with_items:
+        - react-native-cli
+        - create-react-app
+        - apollo
+
+    - name: Install VSCode extensions
+      shell: code --install-extension {{ item }}
+      with_items:
+        - PeterJausovec.vscode-docker
+        - apollographql.vscode-apollo
+        - clinyong.vscode-css-modules
+        - rebornix.ruby
+        - peterjausovec.vscode-docker
+        - karunamurti.haml
+        - kaiwood.endwise
+        - eamodio.gitlens
+        - vscoss.vscode-ansible
+
+    - name: Create a default VSCode configuration
+      template:
+        src: templates/vscode-settings.json.j2
+        dest: /Users/{{ lookup('env', 'USER') }}/Library/Application Support/Code/User/settings.json
+        owner: "{{ lookup('env', 'USER') }}"
+        force: no
+
+    - name: Install a global ruby and some core gems
+      shell: |
+        eval "$(rbenv init -)"
+        rbenv install 2.4.2
+        rbenv global 2.4.2
+        gem update --system
+        gem install rcodetools rubocop cocoapods rails ruby-lint
