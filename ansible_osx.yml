@@ -16,7 +16,7 @@
         - datagrip
         - sublime-text
         - iterm2
-        - docker-edge
+        # - docker-edge
         - android-studio
         - caskroom/versions/java8
         - android-sdk
@@ -28,6 +28,9 @@
         - zoomus
         - postman
         - microsoft-office
+        - amazon-workspaces
+        # - # 1password # @TODO uncomment this once don't have it already installed....
+        - private-internet-access
     
     - name: 'add custom homebrew repos'
       homebrew_tap:
@@ -42,7 +45,6 @@
           'yarn',
           'kubernetes-cli',
           'kubernetes-helm',
-          'rbenv',
           'mas',
           'postgresql',
           'watchman',
@@ -50,7 +52,18 @@
           'awscli',
           'imagemagick@6',
           'gnu-time',
-          'kubectx'
+          'kubectx',
+          'coreutils',
+          'automake',
+          'autoconf',
+          'openssl' ,
+          'libyaml',
+          'readline',
+          'libxslt',
+          'libtool',
+          'unixodbc',
+          'unzip',
+          'curl'
         ]
         state: present
         update_homebrew: yes
@@ -60,10 +73,22 @@
         name: imagemagick@6
         state: linked
 
+    - git:
+        repo: https://github.com/asdf-vm/asdf.git
+        dest: "/Users/{{ lookup('env', 'USER')/.asdf }}"
+        version: v0.7.1
+
+    # Note that MAS can only installed applications which are already in the "purchased" tab
+    # of the Mac app store. So if you're using a new app store account or you've never installed
+    # one of the below apps before, you'll need to install it from the Mac App Store app by hand
+    # the first time.
     - name: Install apps from the Mac App Store using MAS (Assumes you're logged in etc)
       shell: mas install {{ item }}
       with_items:
         - 409183694 # Keynote
+        - 1295203466 # Microsoft remote desktop
+        - 497799835 # xcode
+        - 496437906 # shush microphone manager
 
     - name: Install Addroid SDKs etc
       shell: yes | sdkmanager "{{ item }}" --sdk_root=/Users/{{ lookup('env', 'USER') }}/Library/Android/sdk
@@ -127,6 +152,13 @@
       template:
         src: templates/.zshrc.j2
         dest: /Users/{{ lookup('env', 'USER') }}/.zshrc
+        owner: "{{ lookup('env', 'USER') }}"
+        force: yes
+
+    - name: "Create a default asdf configuration"
+      template:
+        src: templates/.asdfrc.j2
+        dest: /Users/{{ lookup('env', 'USER') }}/.asdfrc
         owner: "{{ lookup('env', 'USER') }}"
         force: yes
 
