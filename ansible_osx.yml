@@ -65,7 +65,8 @@
           'unixodbc',
           'unzip',
           'curl',
-          'gpg'
+          'gpg',
+          'erlang'
         ]
         state: present
         update_homebrew: yes
