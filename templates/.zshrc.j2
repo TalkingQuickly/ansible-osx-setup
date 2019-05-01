@@ -7,18 +7,23 @@ export PATH=${PATH}:${ANDROID_HOME}/tools
 export PATH=${PATH}:${ANDROID_HOME}/platform-tools
 export PATH=/usr/local/opt/imagemagick@6/bin:${PATH}
 
-# Load rbenv
-# eval "$(rbenv init -)"
-
-# Load nvm
-# export NVM_DIR="$HOME/.nvm"
-# [ -s "$NVM_DIR/nvm.sh" ] && . "$NVM_DIR/nvm.sh --no-use"  # This loads nvm
-# [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
-
+# ZSH setup
+export ZSH=$HOME/.oh-my-zsh
 ZSH_THEME="rubbyrussel"
+plugins=(git kubectl)
+DISABLE_UNTRACKED_FILES_DIRTY="true"
 
-# Load personal ZSH config which should be stored in ~/.zshrc.personal
-. ~/.zshrc.personal 
+# Load personal pre oh-my-zsh init config which should be stored in ~/.zshrc.personal.before
+# E.g. setting ZSH theme etc
+
+. ~/.zshrc.personal.before
+
+# Load Oh My Zsh
+source $ZSH/oh-my-zsh.sh
+
+# Load personal ZSH config which should be stored in ~/.zshrc.personal.after
+# Most ZSH config goes here
+. ~/.zshrc.personal.after
 
 # Load asdf
 . $HOME/.asdf/asdf.sh
