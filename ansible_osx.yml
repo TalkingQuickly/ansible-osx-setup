@@ -7,66 +7,72 @@
     - name: Install core packages via brew casks
       homebrew_cask: name={{ item }} state=present
       with_items:
-        - virtualbox
-        - vagrant
-        - visual-studio-code
-        - google-chrome
-        - slack
-        - postico
-        - datagrip
-        - sublime-text
-        - iterm2
-        # - docker-edge
-        - android-studio
-        # - caskroom/versions/java8
+        - 1password
         - android-sdk
-        - ngrok
-        - zeplin
-        - graphql-playground
+        - android-studio
         - dash
-        - sketch
-        - zoomus
-        - postman
-        - microsoft-office
-        # - # 1password # @TODO uncomment this once don't have it already installed....
-        # - ADD FUSE and SSHFS (https://osxfuse.github.io/)
+        - datagrip
+        - docker
+        - google-chrome
         - google-cloud-sdk
+        - graphql-playground
+        - iterm2
+        - microsoft-office
+        - ngrok
+        - postico
+        - postman
+        - sketch
+        - slack
+        - sublime-text
+        - vagrant
+        - virtualbox
+        - visual-studio-code
+        - zeplin
+        - zoomus
+        # - caskroom/versions/java8
     
     - name: 'add custom homebrew repos'
       homebrew_tap:
-        name: heroku/brew
+        name: [
+          heroku/brew
+          thoughtbot/formulae
+        ]
 
     - name: "Install homebrew packages"
       homebrew:
         name: [
-          'zsh', 
-          'tmux',
-          'vim',
-          'yarn',
+          'autoconf',
+          'automake',
+          'awscli',
+          'coreutils',
+          'curl',
+          'erlang',
+          'fzf',
+          'gnu-time',
+          'gpg',
+          'heroku',
+          'imagemagick@6',
+          'kubectx',
           'kubernetes-cli',
           'kubernetes-helm',
-          'mas',
-          'redis',
-          'postgresql',
-          'watchman',
-          'heroku',
-          'awscli',
-          'imagemagick@6',
-          'gnu-time',
-          'kubectx',
-          'coreutils',
-          'automake',
-          'autoconf',
-          'openssl' ,
-          'libyaml',
-          'readline',
-          'libxslt',
           'libtool',
+          'libxslt',
+          'libyaml',
+          'mas',
+          'openssl' ,
+          'osxfuse',
+          'postgresql',
+          'rcm',
+          'readline',
+          'redis',
+          'sshfs',
+          'tmux',
           'unixodbc',
           'unzip',
-          'curl',
-          'gpg',
-          'erlang'
+          'vim',
+          'watchman',
+          'yarn',
+          'zsh', 
         ]
         state: present
         update_homebrew: yes
@@ -84,13 +90,11 @@
     - name: Install Addroid SDKs etc
       shell: yes | sdkmanager "{{ item }}" --sdk_root=/Users/{{ lookup('env', 'USER') }}/Library/Android/sdk
       with_items:
-        - "platforms;android-23"
-        - "platforms;android-25" 
-        - "platforms;android-26" 
-        - "platforms;android-27" 
-        - "platforms;android-28" 
-        - "build-tools;23.0.3" 
+        - "add-ons;addon-google_apis-google-21"        
+        - "add-ons;addon-google_apis-google-22" 
+        - "add-ons;addon-google_apis-google-23"
         - "build-tools;23.0.1"  
+        - "build-tools;23.0.3" 
         - "build-tools;25.0.2" 
         - "build-tools;25.0.3" 
         - "build-tools;26.0.0" 
@@ -99,16 +103,18 @@
         - "build-tools;26.0.3"
         - "build-tools;27.0.3" 
         - "build-tools;28.0.3"
-        - "system-images;android-23;google_apis;x86" 
-        - "system-images;android-26;google_apis;x86" 
         - "extras;android;m2repository" 
-        - "extras;google;m2repository" 
         - "extras;google;google_play_services" 
+        - "extras;google;m2repository" 
         - "extras;m2repository;com;android;support;constraint;constraint-layout;1.0.1" 
         - "extras;m2repository;com;android;support;constraint;constraint-layout;1.0.2" 
-        - "add-ons;addon-google_apis-google-21"        
-        - "add-ons;addon-google_apis-google-22" 
-        - "add-ons;addon-google_apis-google-23"
+        - "platforms;android-23"
+        - "platforms;android-25" 
+        - "platforms;android-26" 
+        - "platforms;android-27" 
+        - "platforms;android-28" 
+        - "system-images;android-23;google_apis;x86" 
+        - "system-images;android-26;google_apis;x86" 
 
     - name: Get the path to ZSH
       become: false
@@ -156,8 +162,9 @@
 
     - name: "Install default node"
       shell: |
-        asdf install nodejs 11.11.0
         bash /Users/{{ lookup('env', 'USER') }}/.asdf/plugins/nodejs/bin/import-release-team-keyring
+        asdf install nodejs 11.11.0
+        asdf install nodejs 10.8.0
         asdf global nodejs 11.11.0
 
     - name: "Install default elixir"
@@ -175,15 +182,18 @@
     - name: Install VSCode extensions
       shell: code --install-extension {{ item }}
       with_items:
-        - PeterJausovec.vscode-docker
         - apollographql.vscode-apollo
         - clinyong.vscode-css-modules
-        - rebornix.ruby
-        - peterjausovec.vscode-docker
-        - karunamurti.haml
-        - kaiwood.endwise
         - eamodio.gitlens
+        - kaiwood.endwise
+        - karunamurti.haml
+        - ms-vscode.vscode-typescript-tslint-plugin
+        - PeterJausovec.vscode-docker
+        - peterjausovec.vscode-docker
+        - rebornix.ruby
+        - Tyriar.sort-lines
         - vscoss.vscode-ansible
+
 
     - name: Create a default VSCode configuration
       template:
