@@ -1,3 +1,20 @@
+Install Xcode
+
+Accept license:
+
+```
+sudo xcodebuild -license
+```
+
+Install Ansible
+
+```
+sudo easy_install pip
+sudo pip install ansible
+```
+
+
+
 To run playbook:
 
 ```

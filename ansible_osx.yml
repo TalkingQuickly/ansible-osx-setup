@@ -34,7 +34,7 @@
     - name: 'add custom homebrew repos'
       homebrew_tap:
         name: [
-          heroku/brew
+          heroku/brew,
           thoughtbot/formulae
         ]
 
@@ -149,7 +149,9 @@
         force: yes
 
     - name: "Install asdf plugins"
-      shell: asdf plugin-add {{ item }} || exit 0
+      shell: |
+        source /Users/{{ lookup('env', 'USER') }}/.asdf/asdf.sh
+        asdf plugin-add {{ item }} || exit 0
       with_items:
         - ruby
         - elixir
