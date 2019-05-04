@@ -4,6 +4,15 @@
     - name: Install homebrew
       shell: /usr/bin/ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"
 
+    - name: 'add custom homebrew repos'
+      homebrew_tap:
+        name: [
+          heroku/brew,
+          thoughtbot/formulae,
+          caskroom/versions,
+          adoptopenjdk/openjdk
+        ]
+
     - name: Install core packages via brew casks
       homebrew_cask: name={{ item }} state=present
       with_items:
@@ -13,12 +22,15 @@
         - dash
         - datagrip
         - docker
+        - dropbox
         - google-chrome
         - google-cloud-sdk
         - graphql-playground
         - iterm2
+        - adoptopenjdk/openjdk/adoptopenjdk8
         - microsoft-office
         - ngrok
+        - osxfuse
         - postico
         - postman
         - sketch
@@ -29,14 +41,6 @@
         - visual-studio-code
         - zeplin
         - zoomus
-        # - caskroom/versions/java8
-    
-    - name: 'add custom homebrew repos'
-      homebrew_tap:
-        name: [
-          heroku/brew
-          thoughtbot/formulae
-        ]
 
     - name: "Install homebrew packages"
       homebrew:
@@ -60,7 +64,6 @@
           'libyaml',
           'mas',
           'openssl' ,
-          'osxfuse',
           'postgresql',
           'rcm',
           'readline',
@@ -149,7 +152,9 @@
         force: yes
 
     - name: "Install asdf plugins"
-      shell: asdf plugin-add {{ item }} || exit 0
+      shell: |
+        source /Users/{{ lookup('env', 'USER') }}/.asdf/asdf.sh
+        asdf plugin-add {{ item }} || exit 0
       with_items:
         - ruby
         - elixir
@@ -157,11 +162,13 @@
 
     - name: "Install Default Ruby"
       shell: |
+        source /Users/{{ lookup('env', 'USER') }}/.asdf/asdf.sh
         asdf install ruby 2.4.2
         asdf global ruby 2.4.2 
 
     - name: "Install default node"
       shell: |
+        source /Users/{{ lookup('env', 'USER') }}/.asdf/asdf.sh
         bash /Users/{{ lookup('env', 'USER') }}/.asdf/plugins/nodejs/bin/import-release-team-keyring
         asdf install nodejs 11.11.0
         asdf install nodejs 10.8.0
@@ -169,6 +176,7 @@
 
     - name: "Install default elixir"
       shell: |
+        source /Users/{{ lookup('env', 'USER') }}/.asdf/asdf.sh
         asdf install elixir 1.6
         asdf global elixir 1.6
 
