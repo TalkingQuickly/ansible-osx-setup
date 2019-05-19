@@ -36,6 +36,7 @@
         - sketch
         - slack
         - sublime-text
+        - tunnelblick
         - vagrant
         - virtualbox
         - visual-studio-code
@@ -64,6 +65,7 @@
           'libyaml',
           'mas',
           'openssl' ,
+          'pkg-config',
           'postgresql',
           'rcm',
           'readline',
@@ -75,15 +77,14 @@
           'vim',
           'watchman',
           'yarn',
-          'zsh', 
+          'zsh',
+          'zlib',
         ]
         state: present
         update_homebrew: yes
 
     - name: "Link ImageMagick6 as main version (for rmagick gem)"
-      homebrew:
-        name: imagemagick@6
-        state: linked
+      shell: brew link -f imagemagick@6
 
     - git:
         repo: https://github.com/asdf-vm/asdf.git
@@ -165,6 +166,8 @@
         source /Users/{{ lookup('env', 'USER') }}/.asdf/asdf.sh
         asdf install ruby 2.4.2
         asdf global ruby 2.4.2 
+        gem install bundler -v 1.17.3
+        gem install cocoapods
 
     - name: "Install default node"
       shell: |
@@ -172,6 +175,7 @@
         bash /Users/{{ lookup('env', 'USER') }}/.asdf/plugins/nodejs/bin/import-release-team-keyring
         asdf install nodejs 11.11.0
         asdf install nodejs 10.8.0
+        asdf install nodejs 9.11.1
         asdf global nodejs 11.11.0
 
     - name: "Install default elixir"
