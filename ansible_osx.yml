@@ -10,11 +10,15 @@
           heroku/brew,
           thoughtbot/formulae,
           caskroom/versions,
-          adoptopenjdk/openjdk
+          adoptopenjdk/openjdk,
+          weaveworks/tap,
+          fishtown-analytics/dbt
+
         ]
 
     - name: Install core packages via brew casks
       homebrew_cask: name={{ item }} state=present
+      ignore_errors: yes
       with_items:
         - 1password
         - android-sdk
@@ -40,6 +44,7 @@
         - vagrant
         - virtualbox
         - visual-studio-code
+        - vlc
         - zeplin
         - zoomus
 
@@ -49,8 +54,10 @@
           'autoconf',
           'automake',
           'awscli',
+          'aws-iam-authenticator',
           'coreutils',
           'curl',
+          'dbt',
           'erlang',
           'fzf',
           'gnu-time',
@@ -64,6 +71,7 @@
           'libxslt',
           'libyaml',
           'mas',
+          'mysql',
           'openssl' ,
           'pkg-config',
           'postgresql',
@@ -72,10 +80,12 @@
           'redis',
           'sshfs',
           'tmux',
+          'terraform',
           'unixodbc',
           'unzip',
           'vim',
           'watchman',
+          'weaveworks/tap/eksctl',
           'yarn',
           'zsh',
           'zlib',
@@ -133,6 +143,8 @@
 
     - name: Install Oh My ZSH
       shell: sh -c "$(curl -fsSL https://raw.githubusercontent.com/robbyrussell/oh-my-zsh/master/tools/install.sh)"
+      args:
+        creates: "/Users/{{ lookup('env', 'USER') }}/.oh-my-zsh"
 
     - name: Set ZSH as the default shell
       shell: chsh -s $(which zsh) {{ lookup('env', 'USER') }}
@@ -160,6 +172,19 @@
         - ruby
         - elixir
         - nodejs
+        - python
+
+    - name: "Install Default Python"
+      shell: |
+        export LDFLAGS="${LDFLAGS} -L/usr/local/opt/zlib/lib"
+        export CPPFLAGS="${CPPFLAGS} -I/usr/local/opt/zlib/include"
+        export PKG_CONFIG_PATH="${PKG_CONFIG_PATH} /usr/local/opt/zlib/lib/pkgconfig"
+        source /Users/{{ lookup('env', 'USER') }}/.asdf/asdf.sh
+        asdf install python 3.7.3
+        asdf global python 3.7.3
+        pip install boto
+        pip install ansible
+        asdf reshim python
 
     - name: "Install Default Ruby"
       shell: |
