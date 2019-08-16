@@ -215,6 +215,8 @@
         - react-native-cli
         - create-react-app
         - apollo
+        - generator-generator
+        - yo
 
     - name: Install VSCode extensions
       shell: code --install-extension {{ item }}
