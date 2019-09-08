@@ -32,11 +32,13 @@
         - graphql-playground
         - iterm2
         - adoptopenjdk/openjdk/adoptopenjdk8
+        - kindle
         - microsoft-office
         - ngrok
         - osxfuse
         - postico
         - postman
+        - rstudio
         - sketch
         - slack
         - sublime-text
@@ -75,9 +77,11 @@
           'openssl' ,
           'pkg-config',
           'postgresql',
+          'r',
           'rcm',
           'readline',
           'redis',
+          'sqllite3',
           'sshfs',
           'tmux',
           'terraform',
@@ -86,6 +90,7 @@
           'vim',
           'watchman',
           'weaveworks/tap/eksctl',
+          'xz',
           'yarn',
           'zsh',
           'zlib',
@@ -184,6 +189,15 @@
         asdf global python 3.7.3
         pip install boto
         pip install ansible
+        pip install jupyterlab
+        pip isntall numpy 
+        pip install scipy
+        pip install matplotlib 
+        pip install ipython 
+        pip install jupyter
+        pip install pandas
+        pip install sympy
+        pip install nose
         asdf reshim python
 
     - name: "Install Default Ruby"
@@ -207,7 +221,9 @@
       shell: |
         source /Users/{{ lookup('env', 'USER') }}/.asdf/asdf.sh
         asdf install elixir 1.6
-        asdf global elixir 1.6
+        asdf install elixir 1.9.1
+        asdf global elixir 1.9.1
+        mix archive.install hex phx_new 1.4.9 --force
 
     - name: Install yarn packages
       shell: yarn global add {{ item }} --prefix /usr/local
