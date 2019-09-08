@@ -187,17 +187,18 @@
         source /Users/{{ lookup('env', 'USER') }}/.asdf/asdf.sh
         asdf install python 3.7.3
         asdf global python 3.7.3
-        pip install boto
-        pip install ansible
-        pip install jupyterlab
-        pip isntall numpy 
-        pip install scipy
-        pip install matplotlib 
-        pip install ipython 
-        pip install jupyter
-        pip install pandas
-        pip install sympy
-        pip install nose
+        pip3 install boto
+        pip3 install ansible
+        pip3 install jupyterlab
+        pip3 isntall numpy 
+        pip3 install scipy
+        pip3 install matplotlib 
+        pip3 install ipython 
+        pip3 install jupyter
+        pip3 install pandas
+        pip3 install sympy
+        pip3 install nose
+        pip3 install scikit-learn
         asdf reshim python
 
     - name: "Install Default Ruby"
