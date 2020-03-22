@@ -1,0 +1,32 @@
+- name: "Install homebrew packages"
+  homebrew:
+    name: [ dnsmasq ]
+    state: present
+    update_homebrew: true
+
+- name: "Get config directory"
+  shell:
+    cmd: echo "$(brew --prefix)/etc/"
+  register: config_directory
+
+- name: Create config directory
+  file:
+    path: "{{ config_directory.stdout | trim }}"
+    state: directory
+
+- name: Create config 
+  template:
+    src: dnsmasq.conf.j2
+    dest: "{{  config_directory.stdout | trim }}/dnsmasq.conf"
+
+- name: Create resolvers directory 
+  file:
+    path: /etc/resolver/
+    state: directory
+  become: true
+
+- name: Create resolver
+  template:
+    src: local-resolver.j2
+    dest: /etc/resolver/localhost
+  become: true

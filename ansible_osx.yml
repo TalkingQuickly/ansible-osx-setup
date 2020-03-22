@@ -4,6 +4,10 @@
     - name: Install homebrew
       shell: /usr/bin/ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"
 
+    - name: Setup dnsmasq
+      include_role: dnsmasq
+      become: true
+
     - name: 'add custom homebrew repos'
       homebrew_tap:
         name: [
@@ -13,7 +17,6 @@
           adoptopenjdk/openjdk,
           weaveworks/tap,
           fishtown-analytics/dbt
-
         ]
 
     - name: Install core packages via brew casks
@@ -60,6 +63,7 @@
           'coreutils',
           'curl',
           'dbt',
+          'dnsmasq',
           'erlang',
           'fzf',
           'gnu-time',
@@ -81,7 +85,7 @@
           'rcm',
           'readline',
           'redis',
-          'sqllite3',
+          'sqlite3',
           'sshfs',
           'tmux',
           'terraform',
