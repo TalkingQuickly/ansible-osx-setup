@@ -30,3 +30,7 @@
     src: local-resolver.j2
     dest: /etc/resolver/localhost
   become: true
+
+- name: Notes
+  debug:
+    msg: "Remember must be started with sudo, e.g. sudo brew services start dnsmasq"
