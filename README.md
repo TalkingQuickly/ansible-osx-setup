@@ -20,3 +20,9 @@ To run playbook:
 ```
 ansible-playbook -i "localhost," -c local ansible_osx.yml --ask-become-pass
 ```
+
+You can run a role directly with:
+
+```
+ansible localhost -m include_role -a name=dnsmasq --ask-become-pass
+```
