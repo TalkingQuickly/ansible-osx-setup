@@ -63,6 +63,7 @@
           'coreutils',
           'curl',
           'dbt',
+          'direnv',
           'dnsmasq',
           'erlang',
           'fzf',
