@@ -6,7 +6,6 @@
 
     - name: Setup dnsmasq
       include_role: dnsmasq
-      become: true
 
     - name: 'add custom homebrew repos'
       homebrew_tap:
