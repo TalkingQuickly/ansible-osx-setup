@@ -172,6 +172,7 @@
         - ms-vscode.vscode-typescript-tslint-plugin
         - msjsdiag.debugger-for-chrome
         - rebornix.ruby
+        - richie5um2.vscode-sort-json
         - Tyriar.sort-lines
         - vscodevim.vim
         - vscoss.vscode-ansible
