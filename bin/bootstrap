@@ -2,7 +2,7 @@
 xcode-select --install
 sudo xcodebuild -license
 sudo easy_install pip
-sudo pip install --ignore-installed ansible
+pip install --ignore-installed ansible
 ansible-galaxy install -r requirements.yml
 
 ansible-playbook -i "localhost," -c local ansible_osx.yml --ask-become-pass
