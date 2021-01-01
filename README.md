@@ -1,38 +1,32 @@
-Install Xcode
+# MacOS Setup with Ansible
 
-Accept license:
+This repository contains an Ansible configuration for setting up a Mac from scratch. It's primary purpose is setting up a new Mac from scratch, but I endeavor to also use it for adding new software as I go so that it remains up to date. At the moment it's being used for setting up Intel based Macs running MacOS Big Sur.
 
-```
-sudo xcodebuild -license
-```
+## Getting Started
 
-Install Ansible
+There's a simple shell script in `bin/bootstrap` which will perform the initial steps of:
 
-```
-sudo easy_install pip
-sudo pip install --ignore-installed ansible
-```
+1. Installing Xcode
+2. Installing Ansible
+3. Fetching required Ansible roles and collections
 
-Get community.general collection:
+And then runs the main playbook `ansible_osx.yml`.
 
-```
-ansible-galaxy install -r requirements.yml
-```
+For future updates, `bin/apply` can be used to run just the Ansible playbook without the setup commands.
 
-To run playbook:
+## What's installed
 
-```
-ansible-playbook -i "localhost," -c local ansible_osx.yml --ask-become-pass
-```
+The easiest way to understand what's installed is to read the contents of `ansible_osx.yml`, this configuration is fairly specific to the range of development I do personally, but may serve as a useful starting point for others. The core components are:
 
-You can run a role directly with:
+- ZSH + Oh My Zsh as the primary shell
+- Homebrew for package management
+- ASDF for version management (along with plugins and default versions for ruby, python, javascript, elixir and erlang)
+- Virtualbox, Vagrant and Docker
+- VSCode + default plugins and configuration
+- A selection of Android SDK's
+- Lots of other tools and utilities
 
-```
-ansible localhost -m include_role -a name=dnsmasq --ask-become-pass
-```
+## Customising
 
-## Structure
-
-- 
-
+Almost anything can be customised by editing `ansible_osx.yml`.
 

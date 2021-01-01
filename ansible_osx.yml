@@ -191,15 +191,12 @@
 
     - name: "Install Default Python"
       shell: |
-        export LDFLAGS="${LDFLAGS} -L/usr/local/opt/zlib/lib"
-        export CPPFLAGS="${CPPFLAGS} -I/usr/local/opt/zlib/include"
-        export PKG_CONFIG_PATH="${PKG_CONFIG_PATH} /usr/local/opt/zlib/lib/pkgconfig"
         source /Users/{{ lookup('env', 'USER') }}/.asdf/asdf.sh
-        asdf install python 3.7.3
-        asdf global python 3.7.3
+        asdf install python 3.9.1
+        asdf global python 3.9.1
         pip3 install boto
         pip3 install ansible
-        pip3 install jupyterlab`
+        pip3 install jupyterlab
         pip3 isntall numpy 
         pip3 install scipy
         pip3 install matplotlib 
