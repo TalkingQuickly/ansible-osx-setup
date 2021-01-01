@@ -2,28 +2,31 @@
 - hosts: localhost
   tasks:
     - name: Install homebrew
-      shell: /usr/bin/ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"
+      include_role:
+        name: geerlingguy.homebrew
 
     - name: Setup dnsmasq
-      include_role: dnsmasq
-      become: true
+      include_role:
+        name: dnsmasq
 
     - name: 'add custom homebrew repos'
-      homebrew_tap:
+      community.general.homebrew_tap:
         name: [
-          heroku/brew,
-          thoughtbot/formulae,
-          caskroom/versions,
           adoptopenjdk/openjdk,
+          fishtown-analytics/dbt,
+          heroku/brew,
+          homebrew/cask-versions,
+          thoughtbot/formulae,
           weaveworks/tap,
-          fishtown-analytics/dbt
         ]
 
     - name: Install core packages via brew casks
-      homebrew_cask: name={{ item }} state=present
+      community.general.homebrew_cask:
+        name: "{{ item }}"
       ignore_errors: yes
       with_items:
         - 1password
+        - adoptopenjdk/openjdk/adoptopenjdk8
         - android-sdk
         - android-studio
         - dash
@@ -34,7 +37,6 @@
         - google-cloud-sdk
         - graphql-playground
         - iterm2
-        - adoptopenjdk/openjdk/adoptopenjdk8
         - kindle
         - microsoft-office
         - ngrok
@@ -45,6 +47,7 @@
         - sketch
         - slack
         - sublime-text
+        - telegram
         - tunnelblick
         - vagrant
         - virtualbox
@@ -54,15 +57,15 @@
         - zoomus
 
     - name: "Install homebrew packages"
-      homebrew:
+      community.general.homebrew:
         name: [
           'autoconf',
           'automake',
-          'awscli',
           'aws-iam-authenticator',
+          'awscli',
           'coreutils',
           'curl',
-          'dbt',
+          'dbt@0.18.0',
           'direnv',
           'dnsmasq',
           'erlang',
@@ -70,6 +73,7 @@
           'gnu-time',
           'gpg',
           'heroku',
+          'htop',
           'imagemagick@6',
           'kubectx',
           'kubernetes-cli',
@@ -88,8 +92,8 @@
           'redis',
           'sqlite3',
           'sshfs',
-          'tmux',
           'terraform',
+          'tmux',
           'unixodbc',
           'unzip',
           'vim',
@@ -97,8 +101,8 @@
           'weaveworks/tap/eksctl',
           'xz',
           'yarn',
-          'zsh',
           'zlib',
+          'zsh',
         ]
         state: present
         update_homebrew: yes
@@ -110,35 +114,6 @@
         repo: https://github.com/asdf-vm/asdf.git
         dest: "/Users/{{ lookup('env', 'USER') }}/.asdf"
         version: v0.7.1
-
-    - name: Install Addroid SDKs etc
-      shell: yes | sdkmanager "{{ item }}" --sdk_root=/Users/{{ lookup('env', 'USER') }}/Library/Android/sdk
-      with_items:
-        - "add-ons;addon-google_apis-google-21"        
-        - "add-ons;addon-google_apis-google-22" 
-        - "add-ons;addon-google_apis-google-23"
-        - "build-tools;23.0.1"  
-        - "build-tools;23.0.3" 
-        - "build-tools;25.0.2" 
-        - "build-tools;25.0.3" 
-        - "build-tools;26.0.0" 
-        - "build-tools;26.0.1" 
-        - "build-tools;26.0.2" 
-        - "build-tools;26.0.3"
-        - "build-tools;27.0.3" 
-        - "build-tools;28.0.3"
-        - "extras;android;m2repository" 
-        - "extras;google;google_play_services" 
-        - "extras;google;m2repository" 
-        - "extras;m2repository;com;android;support;constraint;constraint-layout;1.0.1" 
-        - "extras;m2repository;com;android;support;constraint;constraint-layout;1.0.2" 
-        - "platforms;android-23"
-        - "platforms;android-25" 
-        - "platforms;android-26" 
-        - "platforms;android-27" 
-        - "platforms;android-28" 
-        - "system-images;android-23;google_apis;x86" 
-        - "system-images;android-26;google_apis;x86" 
 
     - name: Get the path to ZSH
       become: false
@@ -174,6 +149,35 @@
         owner: "{{ lookup('env', 'USER') }}"
         force: yes
 
+    - name: Create a default VSCode configuration
+      template:
+        src: templates/vscode-settings.json.j2
+        dest: /Users/{{ lookup('env', 'USER') }}/Library/Application Support/Code/User/settings.json
+        owner: "{{ lookup('env', 'USER') }}"
+        force: no
+
+    - name: Install VSCode extensions
+      shell: code --install-extension {{ item }}
+      with_items:
+        - apollographql.vscode-apollo
+        - bradlc.vscode-tailwindcss
+        - castwide.solargraph
+        - clinyong.vscode-css-modules
+        - eamodio.gitlens
+        - jakebecker.elixir-ls
+        - kaiwood.endwise
+        - karunamurti.haml
+        - ms-vscode-remote.vscode-remote-extensionpack
+        - ms-vscode.vscode-typescript-tslint-plugin
+        - msjsdiag.debugger-for-chrome
+        - rebornix.ruby
+        - Tyriar.sort-lines
+        - vscodevim.vim
+        - vscoss.vscode-ansible
+        - wholroyd.jinja
+        - wingrunr21.vscode-ruby
+        - xabikos.javascriptsnippets
+
     - name: "Install asdf plugins"
       shell: |
         source /Users/{{ lookup('env', 'USER') }}/.asdf/asdf.sh
@@ -183,6 +187,7 @@
         - elixir
         - nodejs
         - python
+        - erlang
 
     - name: "Install Default Python"
       shell: |
@@ -194,7 +199,7 @@
         asdf global python 3.7.3
         pip3 install boto
         pip3 install ansible
-        pip3 install jupyterlab
+        pip3 install jupyterlab`
         pip3 isntall numpy 
         pip3 install scipy
         pip3 install matplotlib 
@@ -209,27 +214,28 @@
     - name: "Install Default Ruby"
       shell: |
         source /Users/{{ lookup('env', 'USER') }}/.asdf/asdf.sh
-        asdf install ruby 2.4.2
-        asdf global ruby 2.4.2 
-        gem install bundler -v 1.17.3
+        asdf install ruby 3.0.0
+        asdf install ruby 2.7.2
+        asdf global ruby 3.0.0
+        gem install bundler -v 2.2.4
         gem install cocoapods
+        gem install rubocop
+        gem install solargraph
 
     - name: "Install default node"
       shell: |
         source /Users/{{ lookup('env', 'USER') }}/.asdf/asdf.sh
         bash /Users/{{ lookup('env', 'USER') }}/.asdf/plugins/nodejs/bin/import-release-team-keyring
-        asdf install nodejs 11.11.0
-        asdf install nodejs 10.8.0
-        asdf install nodejs 9.11.1
-        asdf global nodejs 11.11.0
+        asdf install nodejs 14.15.3
+        asdf global nodejs 14.15.3
 
     - name: "Install default elixir"
       shell: |
         source /Users/{{ lookup('env', 'USER') }}/.asdf/asdf.sh
-        asdf install elixir 1.6
-        asdf install elixir 1.9.1
-        asdf global elixir 1.9.1
-        mix archive.install hex phx_new 1.4.9 --force
+        asdf install elixir 1.11.2
+        asdf global elixir 1.11.2
+        mix local.hex --force
+        mix archive.install hex phx_new 1.5.7 --force
 
     - name: Install yarn packages
       shell: yarn global add {{ item }} --prefix /usr/local
@@ -240,25 +246,31 @@
         - generator-generator
         - yo
 
-    - name: Install VSCode extensions
-      shell: code --install-extension {{ item }}
+    - name: Install Addroid SDKs etc
+      shell: yes | sdkmanager "{{ item }}" --sdk_root=/Users/{{ lookup('env', 'USER') }}/Library/Android/sdk
       with_items:
-        - apollographql.vscode-apollo
-        - clinyong.vscode-css-modules
-        - eamodio.gitlens
-        - kaiwood.endwise
-        - karunamurti.haml
-        - ms-vscode.vscode-typescript-tslint-plugin
-        - PeterJausovec.vscode-docker
-        - peterjausovec.vscode-docker
-        - rebornix.ruby
-        - Tyriar.sort-lines
-        - vscoss.vscode-ansible
-
-
-    - name: Create a default VSCode configuration
-      template:
-        src: templates/vscode-settings.json.j2
-        dest: /Users/{{ lookup('env', 'USER') }}/Library/Application Support/Code/User/settings.json
-        owner: "{{ lookup('env', 'USER') }}"
-        force: no
+        - "add-ons;addon-google_apis-google-21"        
+        - "add-ons;addon-google_apis-google-22" 
+        - "add-ons;addon-google_apis-google-23"
+        - "build-tools;23.0.1"  
+        - "build-tools;23.0.3" 
+        - "build-tools;25.0.2" 
+        - "build-tools;25.0.3" 
+        - "build-tools;26.0.0" 
+        - "build-tools;26.0.1" 
+        - "build-tools;26.0.2" 
+        - "build-tools;26.0.3"
+        - "build-tools;27.0.3" 
+        - "build-tools;28.0.3"
+        - "extras;android;m2repository" 
+        - "extras;google;google_play_services" 
+        - "extras;google;m2repository" 
+        - "extras;m2repository;com;android;support;constraint;constraint-layout;1.0.1" 
+        - "extras;m2repository;com;android;support;constraint;constraint-layout;1.0.2" 
+        - "platforms;android-23"
+        - "platforms;android-25" 
+        - "platforms;android-26" 
+        - "platforms;android-27" 
+        - "platforms;android-28" 
+        - "system-images;android-23;google_apis;x86" 
+        - "system-images;android-26;google_apis;x86" 

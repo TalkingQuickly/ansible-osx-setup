@@ -10,10 +10,14 @@ Install Ansible
 
 ```
 sudo easy_install pip
-sudo pip install ansible
+sudo pip install --ignore-installed ansible
 ```
 
+Get community.general collection:
 
+```
+ansible-galaxy install -r requirements.yml
+```
 
 To run playbook:
 
@@ -26,3 +30,9 @@ You can run a role directly with:
 ```
 ansible localhost -m include_role -a name=dnsmasq --ask-become-pass
 ```
+
+## Structure
+
+- 
+
+

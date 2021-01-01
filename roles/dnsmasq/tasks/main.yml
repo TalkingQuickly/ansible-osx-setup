@@ -1,5 +1,5 @@
 - name: "Install homebrew packages"
-  homebrew:
+  community.general.homebrew:
     name: [ dnsmasq ]
     state: present
     update_homebrew: true
