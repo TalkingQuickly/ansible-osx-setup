@@ -63,6 +63,7 @@
           'automake',
           'aws-iam-authenticator',
           'awscli',
+          'bfg',
           'coreutils',
           'curl',
           'dbt@0.18.0',
