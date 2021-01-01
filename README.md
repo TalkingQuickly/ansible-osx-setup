@@ -28,5 +28,5 @@ The easiest way to understand what's installed is to read the contents of `ansib
 
 ## Customising
 
-Almost anything can be customised by editing `ansible_osx.yml`.
+Everything can be customised by editing `ansible_osx.yml`.
 
