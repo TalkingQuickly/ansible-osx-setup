@@ -111,11 +111,6 @@
     - name: "Link ImageMagick6 as main version (for rmagick gem)"
       shell: brew link -f imagemagick@6
 
-    - git:
-        repo: https://github.com/asdf-vm/asdf.git
-        dest: "/Users/{{ lookup('env', 'USER') }}/.asdf"
-        version: v0.7.1
-
     - name: Get the path to ZSH
       become: false
       local_action: command which zsh
@@ -143,17 +138,17 @@
         owner: "{{ lookup('env', 'USER') }}"
         force: yes
 
-    - name: "Create a default asdf configuration"
-      template:
-        src: templates/.asdfrc.j2
-        dest: /Users/{{ lookup('env', 'USER') }}/.asdfrc
-        owner: "{{ lookup('env', 'USER') }}"
-        force: yes
-
     - name: Create a default VSCode configuration
       template:
         src: templates/vscode-settings.json.j2
         dest: /Users/{{ lookup('env', 'USER') }}/Library/Application Support/Code/User/settings.json
+        owner: "{{ lookup('env', 'USER') }}"
+        force: no
+
+    - name: Create a default VSCode keuybinding configuration
+      template:
+        src: templates/vscode-keybindings.json.j2
+        dest: /Users/{{ lookup('env', 'USER') }}/Library/Application Support/Code/User/keybindings.json
         owner: "{{ lookup('env', 'USER') }}"
         force: no
 
@@ -179,6 +174,19 @@
         - wholroyd.jinja
         - wingrunr21.vscode-ruby
         - xabikos.javascriptsnippets
+        - streetsidesoftware.code-spell-checker
+
+    - git:
+        repo: https://github.com/asdf-vm/asdf.git
+        dest: "/Users/{{ lookup('env', 'USER') }}/.asdf"
+        version: v0.7.1
+
+    - name: "Create a default asdf configuration"
+      template:
+        src: templates/.asdfrc.j2
+        dest: /Users/{{ lookup('env', 'USER') }}/.asdfrc
+        owner: "{{ lookup('env', 'USER') }}"
+        force: yes
 
     - name: "Install asdf plugins"
       shell: |
