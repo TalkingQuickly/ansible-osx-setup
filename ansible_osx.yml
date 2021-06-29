@@ -175,6 +175,7 @@
         - wingrunr21.vscode-ruby
         - xabikos.javascriptsnippets
         - streetsidesoftware.code-spell-checker
+        - fabiospampinato.vscode-todo-plus
 
     - git:
         repo: https://github.com/asdf-vm/asdf.git
