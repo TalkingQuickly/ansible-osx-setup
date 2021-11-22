@@ -1,7 +1,6 @@
 ---
-roles:
-  - name: geerlingguy.homebrew
 collections:
   - name: https://github.com/ansible-collections/community.general.git
     type: git
     version: main
+  - name: geerlingguy.mac
