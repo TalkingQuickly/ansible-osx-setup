@@ -14,6 +14,8 @@ And then runs the main playbook `ansible_osx.yml`.
 
 For future updates, `bin/apply` can be used to run just the Ansible playbook without the setup commands.
 
+It's important to note that this isn't designed to be particularly robust, particularly when it comes to required env vars, it may be required to run this. Then close the terminal and open it again and re-run and then repeat this process a few times.
+
 ## What's installed
 
 The easiest way to understand what's installed is to read the contents of `ansible_osx.yml`, this configuration is fairly specific to the range of development I do personally, but may serve as a useful starting point for others. The core components are:
