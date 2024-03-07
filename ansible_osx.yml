@@ -50,6 +50,7 @@
           'dnsmasq',
           'fzf',
           'gnu-time',
+          'gh',
           'htop',
           'libtool',
           'libxslt',
