@@ -162,6 +162,17 @@
               fi
           }
       
+    - name: Create ssh key for github
+      shell: |
+        mkdir /Users/{{ lookup('env', 'USER') }}/.ssh
+        touch /Users/{{ lookup('env', 'USER') }}/.ssh/config
+        # DO THE FOLLOWING
+        # cd ~/.ssh
+        # ssh-keygen -t ed25519 -C "hunt.woodie@gmail.com"
+        # ssh-add --apple-use-keychain ~/.ssh/github
+        # pbcopy < ~/.ssh/github.pub 
+        # copy the ssh key to github->settings->ssh keys
+
     
         
 
